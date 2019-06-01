@@ -1,5 +1,6 @@
 # Breakout-Game-2D
-web development game with javascript
+
+### web development game with javascript
 
 1. Create the Canvas and draw on it
 2. Move the ball
