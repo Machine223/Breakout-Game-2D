@@ -2,6 +2,8 @@
 
 ### web development game with javascript
 
+I'm using pure JavaScript to get a solid knowledge of web game development and JavaScript language.
+
 Steps :
 1. Create the Canvas and draw on it
 2. Move the ball
