@@ -1,4 +1,4 @@
-# Breakout-Game-2D
+# Breakout Game 2D
 
 ### web development game with javascript
 
