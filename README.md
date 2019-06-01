@@ -2,6 +2,7 @@
 
 ### web development game with javascript
 
+Steps :
 1. Create the Canvas and draw on it
 2. Move the ball
 3. Bounce off the walls
@@ -12,3 +13,6 @@
 8. Track the score and win
 9. Mouse controls
 10. Finishing up
+
+
+https://developer.mozilla.org
