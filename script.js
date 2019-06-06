@@ -34,6 +34,8 @@ var brickPadding = 10; // distance entre brique
 var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 
+var gameOverNotify = document.querySelector('.game-over-notify');
+var interval;
 
 var bricks = []; // Nos brique sont des objets dans un tableau 2D
 for(var colonne = 0; colonne<brickColumnCount; colonne++) {
