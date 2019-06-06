@@ -26,6 +26,55 @@ var paddleHeight = 10; //hauteur boite
 var paddleWidth = 75; // largeur boite
 var paddleX = (canvas.width-paddleWidth) / 2;//starting point 
 
+var brickRowCount = 3; //ligne
+var brickColumnCount = 5; //colonne
+var brickWidth = 75; // dimension
+var brickHeight = 20;
+var brickPadding = 10; // distance entre brique
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
+
+
+var bricks = []; // Nos brique sont des objets dans un tableau 2D
+for(var colonne = 0; colonne<brickColumnCount; colonne++) {
+    bricks[colonne] = [];
+    for(var ligne = 0; ligne<brickRowCount; ligne++) {
+        bricks[colonne][ligne] = { x: 0, y: 0, status: 1 }; // propriete localisation
+    }
+}
+/***************************************************************
+ * une fonction drawBricks() pour dessiner les Briques
+ ***************************************************************/
+function drawBricks(){
+    for(var colonne = 0; colonne<brickColumnCount; colonne++) {
+        for(var ligne = 0; ligne<brickRowCount; ligne++) {
+            if(bricks[colonne][ligne].status == 1){
+            var brickX = (colonne*(brickWidth+brickPadding)+brickOffsetLeft);
+            var brickY = (ligne*(brickHeight+brickPadding)+brickOffsetTop);
+            bricks[colonne][ligne].x = brickX;
+            bricks[colonne][ligne].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX,brickY,brickWidth,brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+            }
+        }
+    }
+}
+
+
+/***************************************************************
+ * une fonction drawPaddle() pour dessiner le Paddle
+ ***************************************************************/
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
 /***************************************************************
  * une fonction drawBall() pour dessiner la balle
  ***************************************************************/
@@ -36,27 +85,51 @@ function drawBall() {
     ctx.fill();
     ctx.closePath();
 }
+
 /* **************************************************************
  * une fonction draw() exécutée en continue, avec un ensemble different de 
- * valeurs variables à chaque fois pour changer les positions
+ * valeurs variables à chaque fois pour changer les positions avec calcul
  ***************************************************************/
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall(); // appelle la fonction poiur dessiner la balle
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // pour enlever le dernier tracer
+    drawBricks(); //appelle la fonction pour dessiner les briques
+    drawBall(); // appelle la fonction pour dessiner la balle
+    drawPaddle(); //appelle la fonction pour dessiner le Paddle
+    collisionDetection(); // activer la collision
     //Simple wall collision detection(minius ball radius)
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
     }
-    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+    if(y + dy < ballRadius) { // Pour le haut
         dy = -dy;
+    } else if(y + dy > canvas.height-ballRadius) {
+        if(x > paddleX && x < paddleX + paddleWidth) {
+          dy = -dy;
+        }
+        else {
+          gameOverNotify.style.display = 'flex';
+          clearInterval(interval);
+          return;
+        }
+      }
+    if(rightPressed && paddleX < canvas.width-paddleWidth) {
+        paddleX += 7;
+    }
+    else if(leftPressed && paddleX > 0) {
+        paddleX -= 7;
     }
     x += dx;
     y += dy;
 }
 setInterval(draw, 10);
+
+
 //SetInterval :Appelle une fonction de manière répétée et ainsi
 //fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
 
+/* **************************************************************
+ * une fonction keyHandler() pour gerer les touche au clavier et controle du Paddle 
+ ***************************************************************/
 // Controle du Paddle 
 //  1. Deux variables pour stocker l'information(gauche/droite)
 //  2. Deux "event listeners" pour ecouter les commandes clavier(keydown et keyup)
@@ -68,22 +141,39 @@ var leftPressed = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-
 function keyDownHandler(e){
-    if(e.keyCode == 39){ //keyCode pour le clavier touche droite
+    if(e.keyCode == 39 || e.keyCode == 68){ //keyCode pour le clavier touche droite
         rightPressed = true;
-        //console.log("droite"); 
+        console.log("droite"); 
     }
-    else if(e.keyCode == 37){ //keyCode pour le clavier touche gauche
+    else if(e.keyCode == 37 || e.keyCode == 65){ //keyCode pour le clavier touche gauche
         leftPressed = true;
-        //console.log("gauche");
+        console.log("gauche");
     }
 }
 function keyUpHandler(e){
-    if(e.keyCode == 39){ //keyCode pour le clavier touche droite
+    if(e.keyCode == 39 || e.keyCode == 68){ //keyCode pour le clavier touche droite
         rightPressed = false;
     }
-    else if(e.keyCode == 37){ //keyCode pour le clavier touche gauche
+    else if(e.keyCode == 37 || e.keyCode == 65){ //keyCode pour le clavier touche gauche
         leftPressed = false;
+    }
+}
+
+/***************************************************************
+ * une fonction collisionDetection() de détection de collision
+ ***************************************************************/
+function collisionDetection(){
+    for(var colonne=0; colonne<brickColumnCount ; colonne++){
+        for(var ligne=0; ligne < brickRowCount; ligne++){
+            var b = bricks[colonne][ligne]; //on catch le table 
+            // Calcul to see if the ball is inside the rectangle
+            if(b.status == 1){
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
+                dy = -dy; //changement de direction en y
+                b.status = 0;
+                }
+            }
+        }
     }
 }
