@@ -17,9 +17,9 @@ Les valeurs possibles sont :
 // à l'intérieur ou à l'extérieur du chemin.
 
 var x = canvas.width/2;
-var y = canvas.height-30;
-var dx = 2;
-var dy = -2;
+var y = canvas.height-40;
+var dx = 4;
+var dy = -4;
 
 
 /**
@@ -28,11 +28,14 @@ var dy = -2;
  * 
  */
 function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); //moyen d'effacer le contenu du canvas apres l'avoir tracer
     ctx.beginPath(); //commencer un nouveau chemin
     ctx.arc(50, 50, 10, 0, Math.PI*2); // rectangle de dimension 
-    ctx.fillStyle = "#0095DD"; // couleur 
+    ctx.fillStyle = "#0095DD"; // couleur bleu
     ctx.fill(); // renplir l'objet
     ctx.closePath(); // fin du chemin
+    x += dx;
+    y += dy;
 }setInterval(draw, 10);
 //fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
 
