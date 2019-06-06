@@ -16,20 +16,23 @@ Les valeurs possibles sont :
 //L'algorithme utilisé pour déterminer si un point est 
 // à l'intérieur ou à l'extérieur du chemin.
 
-ctx.beginPath(); //commencer un nouveau chemin
-ctx.rect(20, 40, 50, 50); // rectangle de dimension 
-ctx.fillStyle = "black"; // couleur 
-ctx.fill(); // renplir l'objet
-ctx.closePath(); // fin du chemin
+var x = canvas.width/2;
+var y = canvas.height-30;
+var dx = 2;
+var dy = -2;
 
-ctx.beginPath(); // nouveau chemin
-ctx.arc(240, 160, 20, 0, Math.PI*2, false);
-ctx.fillStyle = "green";
-ctx.fill();
-ctx.closePath();
 
-ctx.beginPath();
-ctx.rect(160, 10, 100, 40);
-ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
-ctx.stroke(); //style de trait seulement vide a l'int.
-ctx.closePath();
+/**
+ * une fonction draw() exécutée en continue, avec un ensemble different de 
+ * valeurs variables à chaque fois pour changer les positions
+ * 
+ */
+function draw() {
+    ctx.beginPath(); //commencer un nouveau chemin
+    ctx.arc(50, 50, 10, 0, Math.PI*2); // rectangle de dimension 
+    ctx.fillStyle = "#0095DD"; // couleur 
+    ctx.fill(); // renplir l'objet
+    ctx.closePath(); // fin du chemin
+}setInterval(draw, 10);
+//fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
+
