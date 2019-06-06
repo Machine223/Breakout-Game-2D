@@ -24,7 +24,7 @@ var ballRadius = 10;
 
 var paddleHeight = 10; //hauteur boite
 var paddleWidth = 75; // largeur boite
-var paddleX = (canvas.width-paddleWidth) / 2;
+var paddleX = (canvas.width-paddleWidth) / 2;//starting point 
 
 /***************************************************************
  * une fonction drawBall() pour dessiner la balle
@@ -57,5 +57,33 @@ setInterval(draw, 10);
 //SetInterval :Appelle une fonction de manière répétée et ainsi
 //fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
 
+// Controle du Paddle 
+//  1. Deux variables pour stocker l'information(gauche/droite)
+//  2. Deux "event listeners" pour ecouter les commandes clavier(keydown et keyup)
+//  3. Deux fonctions qui s'occuperont de keydown et keyup
+//  4. La possibilité de bouger le paddle à gauche et à droite.
 
+var rightPressed = false;
+var leftPressed = false;
 
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(e){
+    if(e.keyCode == 39){ //keyCode pour le clavier touche droite
+        rightPressed = true;
+        //console.log("droite"); 
+    }
+    else if(e.keyCode == 37){ //keyCode pour le clavier touche gauche
+        leftPressed = true;
+        //console.log("gauche");
+    }
+}
+function keyUpHandler(e){
+    if(e.keyCode == 39){ //keyCode pour le clavier touche droite
+        rightPressed = false;
+    }
+    else if(e.keyCode == 37){ //keyCode pour le clavier touche gauche
+        leftPressed = false;
+    }
+}
