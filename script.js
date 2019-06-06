@@ -14,28 +14,33 @@ Les valeurs possibles sont :
     fonctionnalité de remplacement du contenu du canevas par une ImageBitmap donnée. */
 
 //L'algorithme utilisé pour déterminer si un point est 
-// à l'intérieur ou à l'extérieur du chemin.
+//à l'intérieur ou à l'extérieur du chemin.
 
 var x = canvas.width/2;
-var y = canvas.height-40;
-var dx = 4;
-var dy = -4;
-
-
-/**
+var y = canvas.height-30;
+var dx = 2;
+var dy = -2;
+/***************************************************************
+ * une fonction drawBall() pour dessiner la balle
+ ***************************************************************/
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.closePath();
+}
+/* **************************************************************
  * une fonction draw() exécutée en continue, avec un ensemble different de 
  * valeurs variables à chaque fois pour changer les positions
- * 
- */
+ ***************************************************************/
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); //moyen d'effacer le contenu du canvas apres l'avoir tracer
-    ctx.beginPath(); //commencer un nouveau chemin
-    ctx.arc(50, 50, 10, 0, Math.PI*2); // rectangle de dimension 
-    ctx.fillStyle = "#0095DD"; // couleur bleu
-    ctx.fill(); // renplir l'objet
-    ctx.closePath(); // fin du chemin
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall(); // appelle la fonction poiur dessiner la balle
     x += dx;
     y += dy;
-}setInterval(draw, 10);
+}
+setInterval(draw, 10);
+//SetInterval :Appelle une fonction de manière répétée et ainsi
 //fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
 
