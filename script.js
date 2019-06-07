@@ -143,6 +143,7 @@ var leftPressed = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+
 function keyDownHandler(e){
     if(e.keyCode == 39 || e.keyCode == 68){ //keyCode pour le clavier touche droite
         rightPressed = true;
@@ -153,6 +154,7 @@ function keyDownHandler(e){
         console.log("gauche");
     }
 }
+
 function keyUpHandler(e){
     if(e.keyCode == 39 || e.keyCode == 68){ //keyCode pour le clavier touche droite
         rightPressed = false;
