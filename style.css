@@ -8,8 +8,8 @@ canvas {
 body { background: #ddd; }
 
 .game-over-notify {
-    position: fixed;
     display: none;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100%;
@@ -21,4 +21,15 @@ body { background: #ddd; }
     font-size: 40px;
     font-weight: bold;
     color: red;
+}
+score {
+    color: #FFE345;
+    text-transform: uppercase;
+    letter-spacing: -0.1em;
+    margin-top: 20px;
+    margin-bottom: 4px;
+    font-weight: 900;
+    font-size: 130px;
+    letter-spacing: -6px;
+    line-height: 110px;
 }

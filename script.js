@@ -1,3 +1,26 @@
+
+/* 
+Author : Abderrahim Ammour
+Date : 14 juin 2019
+Object : Game Breakout 2D made by Mozzila developer Guide
+I'm using pure JavaScript to get a solid knowledge of web 
+game development and JavaScript language.
+
+Source : https://developer.mozilla.org
+
+Steps TODO list :
+1. Create the Canvas and draw on it
+2. Move the ball
+3. Bounce off the walls
+4. Paddle and keyboard controls
+5. Game over
+6. Build the brick field
+7. Collision detection
+8. Track the score and win
+9. Mouse controls
+10. Finishing up
+
+*/
 /* Ici on donne la référence à Javascript de canvas*/
 var canvas = document.getElementById('myCanvas');
 /* la variable ctx est créer pour stocker le contexte de rendu 2D*/
@@ -37,6 +60,12 @@ var brickOffsetLeft = 30;
 var gameOverNotify = document.querySelector('.game-over-notify');
 var interval;
 
+var score = 0;
+var lives = 3;
+var factor = 1.15;
+/***************************************************************
+ * Creer les Briques
+ ***************************************************************/
 var bricks = []; // Nos brique sont des objets dans un tableau 2D
 for(var colonne = 0; colonne<brickColumnCount; colonne++) {
     bricks[colonne] = [];
@@ -44,9 +73,30 @@ for(var colonne = 0; colonne<brickColumnCount; colonne++) {
         bricks[colonne][ligne] = { x: 0, y: 0, status: 1 }; // propriete localisation
     }
 }
+
+
+/***************************************************************
+ * une fonction drawScore() pour dessiner le score
+***************************************************************/
+function drawScore(){
+    ctx.font = "16px Arial"; //set the size and font type
+    ctx.fillStyle = "#0095DD"; // set the color of the font
+    ctx.fillText("Score: " + score ,8,20);//to set the actual text placed on the canvas
+    //last two parameters are the coordinates where the text will be placed on the canvas.
+}
+
+/***************************************************************
+ * une fonction drawLives() pour dessiner le nb de vie
+***************************************************************/
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+
 /***************************************************************
  * une fonction drawBricks() pour dessiner les Briques
- ***************************************************************/
+***************************************************************/
 function drawBricks(){
     for(var colonne = 0; colonne<brickColumnCount; colonne++) {
         for(var ligne = 0; ligne<brickRowCount; ligne++) {
@@ -65,7 +115,6 @@ function drawBricks(){
     }
 }
 
-
 /***************************************************************
  * une fonction drawPaddle() pour dessiner le Paddle
  ***************************************************************/
@@ -78,8 +127,8 @@ function drawPaddle() {
 }
 
 /***************************************************************
- * une fonction drawBall() pour dessiner la balle
- ***************************************************************/
+* une fonction drawBall() pour dessiner la balle
+***************************************************************/
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
@@ -99,19 +148,46 @@ function draw() {
     drawPaddle(); //appelle la fonction pour dessiner le Paddle
     collisionDetection(); // activer la collision
     //Simple wall collision detection(minius ball radius)
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    drawScore();
+    drawLives();
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) { // rebondir pour les cotes
         dx = -dx;
     }
-    if(y + dy < ballRadius) { // Pour le haut
+    if(y + dy < ballRadius) { // Rebondir Pour le haut
         dy = -dy;
-    } else if(y + dy > canvas.height-ballRadius) {
+    } else if(y + dy > canvas.height-ballRadius) { // Rebondir Pour le bas
         if(x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
+            if(x < paddleX + paddleWidth/3){ 
+                // changement de direction pour le paddle
+                dy = -dy;
+                if (dx > 0){
+                   dx = -dx;
+                }
+            }
+            else if(x > paddleX + paddleWidth/3 && x < paddleX + 2*paddleWidth/3){
+                dy = -dy*factor;
+            }
+            else{
+                dy = -dy;
+                if (dx < 0){
+                    dx = -dx;
+                }
+            }
         }
         else {
-          gameOverNotify.style.display = 'flex';
-          clearInterval(interval);
-          return;
+            lives--;
+            if(!lives){
+                gameOverNotify.style.display = 'flex';
+                clearInterval(interval);
+            }
+            else {
+                x = canvas.width/2; // initial place
+                y = canvas.height-30;
+                dx = 2; //revenir au vitesse de debut
+                dy = -2;
+                ballRadius = 10;
+                paddleX = (canvas.width-paddleWidth)/2;
+            }
         }
       }
     if(rightPressed && paddleX < canvas.width-paddleWidth) {
@@ -122,16 +198,19 @@ function draw() {
     }
     x += dx;
     y += dy;
+    requestAnimationFrame(draw); // ce qui fait la boucle
+    console.log("dx = "+dx);
+    console.log("dy = "+dy);
 }
-setInterval(draw, 10);
-
+draw();
 
 //SetInterval :Appelle une fonction de manière répétée et ainsi
 //fonction draw() sera exécutée dans setInterval toutes les 10 millisecondes
+// requestAnimationFrame(draw) est une alternative pour donner au browser d'ajuster le frame
 
 /* **************************************************************
- * une fonction keyHandler() pour gerer les touche au clavier et controle du Paddle 
- ***************************************************************/
+* une fonction keyHandler() pour gerer les touche au clavier et controle du Paddle 
+***************************************************************/
 // Controle du Paddle 
 //  1. Deux variables pour stocker l'information(gauche/droite)
 //  2. Deux "event listeners" pour ecouter les commandes clavier(keydown et keyup)
@@ -140,9 +219,12 @@ setInterval(draw, 10);
 
 var rightPressed = false;
 var leftPressed = false;
+var spacePressed = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove",mouseMoveHandler,false);
+
 
 function keyDownHandler(e){
     if(e.keyCode == 39 || e.keyCode == 68){ //keyCode pour le clavier touche droite
@@ -153,6 +235,11 @@ function keyDownHandler(e){
         leftPressed = true;
         console.log("gauche");
     }
+    if(e.keyCode == 32 && score > 10){  //keyCode for space
+        spacePressed = true;
+        ballRadius = 20;
+        console.log("COMBO!"); 
+    }
 }
 
 function keyUpHandler(e){
@@ -161,6 +248,18 @@ function keyUpHandler(e){
     }
     else if(e.keyCode == 37 || e.keyCode == 65){ //keyCode pour le clavier touche gauche
         leftPressed = false;
+    }
+    if(e.keyCode == 32  && score > 10){
+        spacePressed = false;
+        ballRadius = 10;
+        console.log("COMBO!"); 
+    }
+}
+// fonction pour ajouter le mouvement de la sourie pour deplacer la paddle
+function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
     }
 }
 
@@ -174,8 +273,14 @@ function collisionDetection(){
             // Calcul to see if the ball is inside the rectangle
             if(b.status == 1){
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
-                dy = -dy; //changement de direction en y
-                b.status = 0;
+                    dy = -dy; //changement de direction en y
+                    b.status = 0;
+                    score++; // si le score est égal au nb de bloc de départ, You Win!
+                    if(score == brickRowCount*brickColumnCount) {
+                        alert("YOU WIN, CONGRATULATIONS!");
+                        document.location.reload();
+                        clearInterval(interval); // Needed for Chrome to end game
+                    }
                 }
             }
         }
