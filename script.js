@@ -175,21 +175,23 @@ function draw() {
             }
         }
         else {
-            lives--;
-            if(!lives){
-                gameOverNotify.style.display = 'flex';
-                clearInterval(interval);
-            }
-            else {
-                x = canvas.width/2; // initial place
-                y = canvas.height-30;
-                dx = 2; //revenir au vitesse de debut
-                dy = -2;
-                ballRadius = 10;
-                paddleX = (canvas.width-paddleWidth)/2;
+            if(lives != 0){
+                lives--;
+                if(!lives){
+                    gameOverNotify.style.display = 'flex';
+                    clearInterval(interval);
+                }
+                else {
+                    x = canvas.width/2; // initial place
+                    y = canvas.height-30;
+                    dx = 2; //revenir au vitesse de debut
+                    dy = -2;
+                    ballRadius = 10;
+                    paddleX = (canvas.width-paddleWidth)/2;
+                }
             }
         }
-      }
+    }
     if(rightPressed && paddleX < canvas.width-paddleWidth) {
         paddleX += 7;
     }
