@@ -41,6 +41,7 @@ Les valeurs possibles sont :
 
 var x = canvas.width/2;
 var y = canvas.height-30;
+
 var dx = 2;
 var dy = -2;
 var ballRadius = 10;
@@ -73,7 +74,6 @@ for(var colonne = 0; colonne<brickColumnCount; colonne++) {
         bricks[colonne][ligne] = { x: 0, y: 0, status: 1 }; // propriete localisation
     }
 }
-
 
 /***************************************************************
  * une fonction drawScore() pour dessiner le score
