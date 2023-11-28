@@ -1,4 +1,5 @@
 # Breakout Game 2D
+![image](https://github.com/Machine223/Breakout-Game-2D/assets/42685570/09697e9a-a14b-400a-9770-7ff306f1ee4e)
 
 ### web development game with javascript
 
